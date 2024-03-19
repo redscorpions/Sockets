@@ -13,7 +13,7 @@ def server_start():
             opzione = int(input(' -> '))
 
         if opzione == 1:
-            host = lambda x: socket.gethostbyname("localhost") # ottenimento dell'indirizzo IP di loopback (localhost)
+            socket.gethostbyname("localhost") # ottenimento dell'indirizzo IP di loopback (localhost)
         elif opzione == 2:
             socket.gethostbyname(socket.gethostname()) # ottenimento dell'indirizzo IP su rete locale
     
