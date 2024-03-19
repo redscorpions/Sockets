@@ -7,8 +7,8 @@ public class ServerUDP {
 
 	// Metodo main
 	public static void main(String[] args) throws Exception {
-		// Creazione di un socket UDP per il server sulla porta 9876 e utilizzo del try-with-resources per garantire la chiusura 
-		// automatica del socket
+	// Creazione di un socket UDP per il server sulla porta 9876 e utilizzo del try-with-resources per garantire la chiusura 
+	// automatica del socket
         try (DatagramSocket serverSocket = new DatagramSocket(9876)) {
         	
             // Dichiarazione degli array di byte per i dati da ricevere e inviare
