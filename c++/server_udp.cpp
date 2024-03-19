@@ -1,7 +1,7 @@
 #include <iostream> // Inclusione della libreria standard per la gestione dell'I/O 
 #include <WinSock2.h> // Inclusione della libreria per le funzioni di rete di Windows (gestione socket)
 
-#pragma comment(lib, "ws2_32.lib") // Aggiunta del collegamento alla libreria ws2_32.lib da parte del linker
+#pragma comment(lib, "ws2_32.lib") // Aggiunta del collegamento alla libreria ws2_32.lib eseguito dal linker
 
 using namespace std; // Utilizzo dello spazio dei nomi standard
 
