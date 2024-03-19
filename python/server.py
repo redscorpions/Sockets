@@ -2,10 +2,9 @@ import socket # libreria per la gestione dei socket
 import termcolor # libreria per la gestione dei colori del terminale
 
 def server_start():
-    valida = True
     port = 27015 # porta predefinita per la connessione
     
-    while(valida):
+    while(true):
         # Scegliere se inizializzare una connessione basata su protocollo UDP o TCP
         print('Seleziona opzione:\n1) Avvia il server in loopback\n2) Avvia il server in rete locale')
         opzione = int(input(' -> ')) # scelta
@@ -13,9 +12,11 @@ def server_start():
             opzione = int(input(' -> '))
 
         if opzione == 1:
-            socket.gethostbyname("localhost") # ottenimento dell'indirizzo IP di loopback (localhost)
+            host = socket.gethostbyname("localhost") # ottenimento dell'indirizzo IP di loopback (localhost)
+            break
         elif opzione == 2:
-            socket.gethostbyname(socket.gethostname()) # ottenimento dell'indirizzo IP su rete locale
+            host = socket.gethostbyname(socket.gethostname()) # ottenimento dell'indirizzo IP su rete locale
+            break
     
     server_socket = socket.socket() # creazione del nuovo socket
 
