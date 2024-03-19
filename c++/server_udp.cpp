@@ -14,7 +14,7 @@ int main() {
 
     SOCKET serverSocket; // Inizializzazione variabile socket del server
     serverSocket = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP); // Creazione del socket UDP
-    if (serverSocket == INVALID_SOCKET) { // Controllo se la creazione del socket ha avuto successo
+    if (serverSocket == INVALID_SOCKET) { // Controllo per vedere se la creazione del socket ha avuto successo
         cerr << "Errore durante la creazione del socket" << endl; // Stampa di un messaggio di errore
         WSACleanup(); // Pulizia di Winsock
         return 1; // Uscita dal programma con codice di errore
