@@ -45,14 +45,14 @@ int __cdecl main(void)
     // Risolve l'indirizzo del server e la porta
     iResult = getaddrinfo(NULL, DEFAULT_PORT, &hints, &result);
     if ( iResult != 0 ) {
-        printf("getaddrinfo non riuscita con errore: %d\n", iResult);
+        printf("risoluzione dell'indirizzo non riuscita con errore: %d\n", iResult);
         WSACleanup();
         return 1;
     }
 
     // Crea un socket per l'ascolto delle connessioni in arrivo
     ListenSocket = socket(result->ai_family, result->ai_socktype, result->ai_protocol);
-    if (ListenSocket == INVALID_SOCKET) {
+    if (ListenSocket == INVALID_SOCKET) { // controllo della corretta creazione del socket
         printf("socket non riuscita con errore: %ld\n", WSAGetLastError());
         freeaddrinfo(result);
         WSACleanup();
