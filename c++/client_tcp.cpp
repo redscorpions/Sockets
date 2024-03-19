@@ -21,19 +21,19 @@ int __cdecl main(int argc, char** argv)
     struct addrinfo* result = NULL, * ptr = NULL, hints; // Variabili per la risoluzione dell'indirizzo
     const char* sendbuf = "this is a test"; // Dati da inviare al server
     char recvbuf[DEFAULT_BUFLEN]; // Buffer per i dati ricevuti
-    int iResult;
+    int iResult; // variabile per i risultati dei vari step (inizializzazione, connessione ...)
     int recvbuflen = DEFAULT_BUFLEN; // Dimensione del buffer di ricezione
 
     // Verifica dei parametri passati al programma
     if (argc != 2) {
-        printf("uso: %s nome-server\n", argv[0]);
+        printf("Utilizzando: %s nome-server\n", argv[0]);
         return 1;
     }
 
     // Inizializzazione di Winsock
     iResult = WSAStartup(MAKEWORD(2, 2), &wsaData);
     if (iResult != 0) {
-        printf("WSAStartup non riuscita con errore: %d\n", iResult);
+        printf("Inizializzazione non riuscita con errore: %d\n", iResult);
         return 1;
     }
 
@@ -50,19 +50,19 @@ int __cdecl main(int argc, char** argv)
         return 1;
     }
 
-    // Tentativo di connessione a un indirizzo finché uno non riesce
+    // Tentativo di connessione ad un indirizzo 
     for (ptr = result; ptr != NULL; ptr = ptr->ai_next) {
         // Creazione di un socket per la connessione al server
         ConnectSocket = socket(ptr->ai_family, ptr->ai_socktype, ptr->ai_protocol);
         if (ConnectSocket == INVALID_SOCKET) {
-            printf("connessione al socket non riuscita con errore: %ld\n", WSAGetLastError());
+            printf("creazione del socket non riuscita con errore: %ld\n", WSAGetLastError());
             WSACleanup();
             return 1;
         }
 
         // Connessione al server
         iResult = connect(ConnectSocket, ptr->ai_addr, (int)ptr->ai_addrlen);
-        if (iResult == SOCKET_ERROR) {
+        if (iResult == SOCKET_ERROR) { // controllo se la connessione è fallita
             closesocket(ConnectSocket);
             ConnectSocket = INVALID_SOCKET;
             continue;
@@ -72,23 +72,23 @@ int __cdecl main(int argc, char** argv)
 
     freeaddrinfo(result);
     if (ConnectSocket == INVALID_SOCKET) {
-        printf("Impossibile connettersi al server!\n");
+        printf("Impossibile connettersi al server!\n"); // Errore relativo all'impossibilità di connettersi al server
         WSACleanup();
         return 1;
     }
 
-    // Invia un buffer iniziale al server
+    // Invio di dati al server
     iResult = send(ConnectSocket, sendbuf, (int)strlen(sendbuf), 0);
-    if (iResult == SOCKET_ERROR) {
+    if (iResult == SOCKET_ERROR) { // controllo di avvenuto invio
         printf("invio non riuscito con errore: %d\n", WSAGetLastError());
-        closesocket(ConnectSocket);
-        WSACleanup();
+        closesocket(ConnectSocket); // chiusura del socket
+        WSACleanup(); // Pulizia di Winsock
         return 1;
     }
 
     printf("Bytes inviati: %ld\n", iResult);
 
-    // Chiudi la connessione poiché non verranno inviati altri dati
+    // Terminazione del processo di invio dati
     iResult = shutdown(ConnectSocket, SD_SEND);
     if (iResult == SOCKET_ERROR) {
         printf("chiusura non riuscita con errore: %d\n", WSAGetLastError());
