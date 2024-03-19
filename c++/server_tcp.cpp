@@ -59,77 +59,76 @@ int __cdecl main(void)
         return 1;
     }
 
-    // Configura il socket di ascolto TCP
+    // Associazione del socket alla porta dell'indirizzo specificato
     iResult = bind( ListenSocket, result->ai_addr, (int)result->ai_addrlen);
-    if (iResult == SOCKET_ERROR) {
-        printf("bind non riuscita con errore: %d\n", WSAGetLastError());
+    if (iResult == SOCKET_ERROR) { // controllo di avvenuta associazione
+        printf("associazione non riuscita con errore: %d\n", WSAGetLastError());
         freeaddrinfo(result);
-        closesocket(ListenSocket);
+        closesocket(ListenSocket); // chiusura del socket
         WSACleanup();
         return 1;
     }
 
     freeaddrinfo(result);
 
-    // Mette il socket in ascolto per le connessioni in arrivo
+    // Mette il socket in ascolto per accettare le connessioni in arrivo
     iResult = listen(ListenSocket, SOMAXCONN);
-    if (iResult == SOCKET_ERROR) {
+    if (iResult == SOCKET_ERROR) { // controllo se il socket è in ascolto
         printf("listen non riuscita con errore: %d\n", WSAGetLastError());
         closesocket(ListenSocket);
         WSACleanup();
         return 1;
     }
 
-    // Accetta una connessione da un client
+    // Accettazione di una connessione da un client
     ClientSocket = accept(ListenSocket, NULL, NULL);
-    if (ClientSocket == INVALID_SOCKET) {
-        printf("accept non riuscita con errore: %d\n", WSAGetLastError());
-        closesocket(ListenSocket);
+    if (ClientSocket == INVALID_SOCKET) { // controllo dell'avvenuta accettazione
+        printf("accettazione non riuscita con errore: %d\n", WSAGetLastError());
+        closesocket(ListenSocket); // chiusura del socket
         WSACleanup();
         return 1;
     }
 
-    // Non è più necessario il socket del server
+    // Essendo una configurazione di socket a host singolo non è più necessario ascoltare richieste di connessione da altri client
     closesocket(ListenSocket);
 
-    // Ricevi finché il peer non chiude la connessione
+    // Ricezione continua dei pacchetti finchè il client non si disconnette
     do {
         iResult = recv(ClientSocket, recvbuf, recvbuflen, 0);
-        if (iResult > 0) {
+        if (iResult > 0) { // avvenuta ricezione
             printf("Bytes ricevuti: %d\n", iResult);
 
-            // Rispedisci il buffer al mittente
+            // Rispedisce il buffer di dati al mittente
             iSendResult = send( ClientSocket, recvbuf, iResult, 0 );
-            if (iSendResult == SOCKET_ERROR) {
-                printf("send non riuscita con errore: %d\n", WSAGetLastError());
+            if (iSendResult == SOCKET_ERROR) { // controllo di avvenuto invio
+                printf("invio non riuscito con errore: %d\n", WSAGetLastError());
                 closesocket(ClientSocket);
                 WSACleanup();
                 return 1;
             }
-            printf("Bytes inviati: %d\n", iSendResult);
+            printf("Byte inviati: %d\n", iSendResult);
         }
-        else if (iResult == 0)
+        else if (iResult == 0) // nulla viene ricevuto, il client si è disconnesso
             printf("Chiusura della connessione...\n");
-        else  {
-            printf("recv non riuscita con errore: %d\n", WSAGetLastError());
-            closesocket(ClientSocket);
+        else  { // nulla viene ricevuto a causa di un errore del socket
+            printf("ricezione non avvenuta con errore: %d\n", WSAGetLastError());
+            closesocket(ClientSocket); // chiusura del socket
             WSACleanup();
             return 1;
         }
 
-    } while (iResult > 0);
+    } while (iResult > 0); // continua finchè vengono ricevuti dati
 
-    // Chiudi la connessione poiché abbiamo finito
+    // Chiusura della connessione
     iResult = shutdown(ClientSocket, SD_SEND);
-    if (iResult == SOCKET_ERROR) {
-        printf("shutdown non riuscita con errore: %d\n", WSAGetLastError());
-        closesocket(ClientSocket);
+    if (iResult == SOCKET_ERROR) { // controllo di avvenuta terminazione del processo send (invio)
+        printf("chiusura non riuscita con errore: %d\n", WSAGetLastError());
+        closesocket(ClientSocket); // chiusura del socket
         WSACleanup();
         return 1;
     }
 
-    // Pulizia
-    closesocket(ClientSocket);
+    closesocket(ClientSocket); // chiusura del socket
     WSACleanup();
 
     return 0;
