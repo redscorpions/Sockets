@@ -24,7 +24,7 @@ int __cdecl main(int argc, char** argv)
     int iResult;
     int recvbuflen = DEFAULT_BUFLEN; // Dimensione del buffer di ricezione
 
-    // Verifica i parametri passati al programma
+    // Verifica dei parametri passati al programma
     if (argc != 2) {
         printf("uso: %s nome-server\n", argv[0]);
         return 1;
@@ -37,7 +37,7 @@ int __cdecl main(int argc, char** argv)
         return 1;
     }
 
-    ZeroMemory(&hints, sizeof(hints));
+    ZeroMemory(&hints, sizeof(hints)); // Pulizia della memoria della struttura hints
     hints.ai_family = AF_UNSPEC; // Famiglia di indirizzi non specificata
     hints.ai_socktype = SOCK_STREAM; // Tipo di socket TCP
     hints.ai_protocol = IPPROTO_TCP; // Protocollo TCP
@@ -45,7 +45,7 @@ int __cdecl main(int argc, char** argv)
     // Risoluzione dell'indirizzo del server e della porta
     iResult = getaddrinfo(argv[1], DEFAULT_PORT, &hints, &result);
     if (iResult != 0) {
-        printf("getaddrinfo non riuscita con errore: %d\n", iResult);
+        printf("chiamata a getaddrinfo fallita con errore: %d\n", iResult);
         WSACleanup();
         return 1;
     }
@@ -55,7 +55,7 @@ int __cdecl main(int argc, char** argv)
         // Creazione di un socket per la connessione al server
         ConnectSocket = socket(ptr->ai_family, ptr->ai_socktype, ptr->ai_protocol);
         if (ConnectSocket == INVALID_SOCKET) {
-            printf("socket non riuscita con errore: %ld\n", WSAGetLastError());
+            printf("connessione al socket non riuscita con errore: %ld\n", WSAGetLastError());
             WSACleanup();
             return 1;
         }
@@ -92,19 +92,19 @@ int __cdecl main(int argc, char** argv)
     iResult = shutdown(ConnectSocket, SD_SEND);
     if (iResult == SOCKET_ERROR) {
         printf("chiusura non riuscita con errore: %d\n", WSAGetLastError());
-        closesocket(ConnectSocket);
-        WSACleanup();
+        closesocket(ConnectSocket); // chiusura del socket
+        WSACleanup(); // Pulizia di Winsock
         return 1;
     }
 
-    // Ricevi finché il peer non chiude la connessione
+    // Continua a ricevere dati finchè il server non chiude
     do {
         iResult = recv(ConnectSocket, recvbuf, recvbuflen, 0);
-        if (iResult > 0)
+        if (iResult > 0) // Il client riceve dei dati
             printf("Bytes ricevuti: %d\n", iResult);
-        else if (iResult == 0)
+        else if (iResult == 0) // il client non riceve dati
             printf("Connessione chiusa\n");
-        else
+        else // connessione chiusa a causa di un errore
             printf("recv non riuscita con errore: %d\n", WSAGetLastError());
     } while (iResult > 0);
 
