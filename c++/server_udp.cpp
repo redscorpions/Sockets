@@ -41,7 +41,7 @@ int main() {
 
     while (true) { // Ciclo di ricezione dati dai client
         bytesReceived = recvfrom(serverSocket, buffer, sizeof(buffer), 0, (sockaddr*)&clientAddr, &clientAddrSize); // Ricezione dei dati dai client
-        if (bytesReceived == SOCKET_ERROR) { // Controllo per vedere se la ricezione ha avuto successo
+        if (bytesReceived == SOCKET_ERROR) { // Controllo della corretta ricezione
             cerr << "Errore durante la ricezione dei dati dal client" << endl; // Messaggio d'errore se la ricezione fallisce
             closesocket(serverSocket); // Chiusura del socket
             WSACleanup(); // Pulizia di Winsock
