@@ -1,12 +1,12 @@
-// Definizione necessaria per compilare solo le parti essenziali delle intestazioni di Windows
-#define WIN32_LEAN_AND_MEAN
-#include <windows.h>
-#include <winsock2.h> // Include la libreria per i socket di Windows
-#include <ws2tcpip.h> // Include la libreria per la comunicazione TCP/IP di Windows
-#include <stdlib.h>
-#include <stdio.h>
+#define WIN32_LEAN_AND_MEAN // Definizione necessaria per compilare solo le parti essenziali delle intestazioni di Windows
 
-// È necessario collegarsi a Ws2_32.lib, Mswsock.lib e Advapi32.lib
+#include <windows.h> // Header contenente le funzionalità del SO
+#include <winsock2.h> // Header contenente funzioni e definizioni per l'utilizzo dei socket su Windows
+#include <ws2tcpip.h> // Header contenente funzionalità aggiuntive per le comunicazioni TCP/IP
+#include <stdlib.h> // Header contente definizioni per funzioni standard
+#include <stdio.h> // Header per la gestione standard dell'I/O
+
+// Il linker collegherà automaticamente le seguenti librerie
 #pragma comment (lib, "Ws2_32.lib")
 #pragma comment (lib, "Mswsock.lib")
 #pragma comment (lib, "AdvApi32.lib")
