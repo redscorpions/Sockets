@@ -2,7 +2,7 @@ import socket # libreria per la gestione dei socket
 import termcolor # libreria per la gestione dei colori del terminale
 
 def server_start():
-    host = null # inizializzazione variabile host
+    host = None # inizializzazione variabile host
     port = 27015 # porta predefinita per la connessione
     
     while(true):
